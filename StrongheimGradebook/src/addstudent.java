@@ -41,10 +41,12 @@ public class addstudent extends HttpServlet {
 		
 		
 		String s_id = request.getParameter("studentID");
+		String class_name = request.getParameter("class");
 		String assgn = request.getParameter("assignment");
 		String type = request.getParameter("type");
 		String date = request.getParameter("date");
-		String grd = request.getParameter("grade");
+		String grade = request.getParameter("grade");
+	
 
 		
 		try {
@@ -75,8 +77,8 @@ public class addstudent extends HttpServlet {
 		
 		
 		
-		sql = "INSERT INTO students (id, assignment, a_type, dates, grade)"+
-				"VALUES("+s_id+",'"+assgn+"','"+type+"','"+date+"',"+grd+")";
+		sql = "INSERT INTO students (id, class_name, assignment, a_type, dates, grade)"+
+				"VALUES("+s_id+",'"+class_name+"','"+assgn+"','"+type+"','"+date+"',"+grade+")";
 	
 		    //creating PreparedStatement object to execute query
 		
