@@ -6,13 +6,20 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import model.Student;
+import customTools.DBUtil;
 
 /**
  * Servlet implementation class bytype
@@ -32,9 +39,24 @@ public class bytype extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		String as_type = request.getParameter("a_type");
-		String sql = "";
+	/*	String sql = "";*/
 		String message = "";
-		ResultSet result = null;
+		
+		
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		EntityTransaction trans = em.getTransaction();
+		model.Student bull = new model.Student();
+		model.Weight weight = new model.Weight();
+		String q = "select s from Student s where s.aType = '"+as_type+"'";
+		TypedQuery<Student> bq = em.createQuery(q, Student.class);
+		message= "<thead><tr><th>Student ID</th><th>Class</th><th>Assignment</th><th>Assignment Type</th><th>Date</th><th>Garde</th></tr></thead>";
+		List<Student> list = bq.getResultList();
+
+		for (Student temp : list) {
+			message += "<tr><td>"+temp.getId()+"</td><td>"+temp.getClassName()+"</td><td>"+temp.getAssignment()+"</td><td>"+temp.getAType()+"</td><td>"+temp.getDates()+"</td><td>"+temp.getGrade()+"</td></tr>\n";
+		}
+		
+		/*ResultSet result = null;
 		//System.out.println(as_type);
 		
 		try {
@@ -92,7 +114,7 @@ public class bytype extends HttpServlet {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 
 	    System.out.println(message);
 	      request.setAttribute("message", message);

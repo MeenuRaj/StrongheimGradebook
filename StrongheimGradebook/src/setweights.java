@@ -1,6 +1,7 @@
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,11 +9,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import customTools.DBUtil;
 
 /**
  * Servlet implementation class setweights
@@ -20,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/setweights")
 public class setweights extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+        
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -38,7 +43,61 @@ public class setweights extends HttpServlet {
 		ResultSet result = null;
 		String sql = "";
 
-		System.out.println("works till here");
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		EntityTransaction trans = em.getTransaction();
+		model.Weight weight = new model.Weight();
+		trans.begin();
+		try {
+			
+			
+			String quiz = request.getParameter("quiz");
+			weight.setAsType("Quiz");  
+			weight.setWeight(BigDecimal.valueOf(Double.parseDouble(quiz)));  
+			em.merge(weight);
+			trans.commit();
+			
+		} catch (Exception e) {
+			System.out.println("ERROR:" + e);
+		} 
+try {
+			String project = request.getParameter("project");
+						weight.setAsType("Project");  
+			weight.setWeight(BigDecimal.valueOf(Double.parseDouble(project)));  
+			em.merge(weight);
+			trans.commit();
+			
+		} catch (Exception e) {
+			System.out.println("ERROR:" + e);
+		} 
+		
+try {
+	
+	
+	
+	String test = request.getParameter("Test");
+	weight.setAsType("Test");  
+	weight.setWeight(BigDecimal.valueOf(Double.parseDouble(test)));  
+	em.merge(weight);
+	trans.commit();
+	
+} catch (Exception e) {
+	System.out.println("ERROR:" + e);
+} 
+
+try {
+	
+	String homework = request.getParameter("hw");
+	weight.setAsType("Homework");  
+	weight.setWeight(BigDecimal.valueOf(Double.parseDouble(homework)));  
+	em.merge(weight);
+	trans.commit();
+	
+} catch (Exception e) {
+	System.out.println("ERROR:" + e);
+} 
+
+		
+		/*System.out.println("works till here");
 		
 		String homework = request.getParameter("hw");
 		String quiz = request.getParameter("quiz");
@@ -140,7 +199,7 @@ public class setweights extends HttpServlet {
 					e.printStackTrace();
 				}
 	
-		
+		*/
 		  response.setContentType("text/html");
 		  
 	      getServletContext()

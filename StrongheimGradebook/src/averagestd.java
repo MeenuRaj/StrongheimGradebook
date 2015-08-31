@@ -6,13 +6,21 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import model.Student;
+import model.Weight;
+import customTools.DBUtil;
 
 /**
  * Servlet implementation class averagestd
@@ -36,7 +44,35 @@ public class averagestd extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		String type = request.getParameter("st_avg_id");
-		String sql = "";
+		
+		int counter = 0;
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		EntityTransaction trans = em.getTransaction();
+		model.Student bull = new model.Student();
+		model.Weight weight = new model.Weight();
+		String q = "select s from Student s where s.aType = '"+type+"'";
+		TypedQuery<Student> bq = em.createQuery(q, Student.class);
+
+		List<Student> list = bq.getResultList();
+
+		double hwsum = 0;
+		for (Student temp : list) {
+			hwsum += temp.getGrade().doubleValue();
+			counter++;
+		}
+		double hwaverage = hwsum / counter;
+		System.out.println("hw-" + hwaverage);
+
+		q = "select w from Weight w where w.asType = '"+type+"'";
+		TypedQuery<Weight> wq = em.createQuery(q, Weight.class);
+		List<Weight> weight1 =  wq.getResultList();
+		double hw_weight = weight1.get(0).getWeight().doubleValue();
+		hwaverage = hwaverage * (hw_weight/100);
+		System.out.println("hw weight is -" + hw_weight);
+		System.out.println("weighted hw-" + hwaverage);
+
+		
+/*		String sql = "";
 		String message = "";
 		ResultSet result = null;
 		int sum = 0;
@@ -97,8 +133,8 @@ public class averagestd extends HttpServlet {
 				e.printStackTrace();
 			}
 			average = (sum/counter); 
-			message = "The average grade for "+type+"(s) is: "+average;
-
+			message = "The average grade for "+type+"(s) is: "+average;*/
+		String message = "The average grade for "+type+"(s) is: "+hwaverage;
 	    System.out.println(message);
 	      request.setAttribute("message", message);
 	      getServletContext()

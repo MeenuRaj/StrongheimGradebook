@@ -8,11 +8,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import customTools.DBUtil;
 
 /**
  * Servlet implementation class addstudent
@@ -35,20 +39,36 @@ public class addstudent extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		ResultSet result = null;
-		String sql = "";
+/*		ResultSet result = null;
+		String sql = "";*/
 
 		
-		
-		String s_id = request.getParameter("studentID");
-		String class_name = request.getParameter("class");
-		String assgn = request.getParameter("assignment");
-		String type = request.getParameter("type");
-		String date = request.getParameter("date");
-		String grade = request.getParameter("grade");
-	
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		EntityTransaction trans = em.getTransaction();
+		model.Student student = new model.Student();
+		trans.begin();
+		try {
+			
+			int s_id = Integer.parseInt(request.getParameter("studentID"));
+			student.setId(s_id);
+			String class_name = request.getParameter("class");
+			student.setClassName(class_name);
+			String assgn = request.getParameter("assignment");
+			student.setAssignment(assgn);
+			String type = request.getParameter("type");
+			student.setAType(type);
+			String date = request.getParameter("date");
+			student.setDates(date);
+			String grade = request.getParameter("grade");
+			student.setDates(grade);
+			em.persist(student);
+			trans.commit();
+			
+		} catch (Exception e) {
+			System.out.println("ERROR:" + e);
+		} 
 
-		
+	/*	
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 		} catch (ClassNotFoundException e3) {
@@ -56,10 +76,10 @@ public class addstudent extends HttpServlet {
 			e3.printStackTrace();
 		}
 	    //URL of Oracle database server
-	    String url = "jdbc:oracle:thin:testuser/password@localhost"; 
+	    String url = "jdbc:oracle:thin:testuser/password@localhost"; */
 
 	    
-	    //properties for creating connection to Oracle database
+	  /*  //properties for creating connection to Oracle database
 	    Properties props = new Properties();
 	    props.setProperty("user", "testdb");
 	    props.setProperty("password", "password");
@@ -72,17 +92,16 @@ public class addstudent extends HttpServlet {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-
+*/
 	  
 		
 		
 		
-		sql = "INSERT INTO students (id, class_name, assignment, a_type, dates, grade)"+
-				"VALUES("+s_id+",'"+class_name+"','"+assgn+"','"+type+"','"+date+"',"+grade+")";
+	//	sql = "INSERT INTO students (id, class_name, assignment, a_type, dates, grade)"+		"VALUES("+s_id+",'"+class_name+"','"+assgn+"','"+type+"','"+date+"',"+grade+")";
 	
 		    //creating PreparedStatement object to execute query
 		
-		    PreparedStatement preStatement = null;
+		 /*   PreparedStatement preStatement = null;
 			try {
 				preStatement = conn.prepareStatement(sql);
 			} catch (SQLException e1) {
@@ -95,7 +114,7 @@ public class addstudent extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
+	*/
 		
 		  response.setContentType("text/html");
 	      getServletContext()
